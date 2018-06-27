@@ -4,6 +4,7 @@
 
     {% for product in most_viewed_products %}
         {{ product.name }}
+	      {% include 'default/_product_details.html.twig' %}
     {% endfor %}
 
 {% endif %}

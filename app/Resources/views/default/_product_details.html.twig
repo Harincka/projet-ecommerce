@@ -6,6 +6,8 @@
             {% if product.isStockEmpty() %}
                 <strong>Product Unavailable</strong>
             {% else %}
+                <label for="quantity_product">Quantité : </label>
+                <input type="number" id="quantity_product" name="quantity_product" value="1">
                 <button type="submit" class="btn btn-primary">Add to cart</button>
             {% endif %}
         </form>

@@ -25,21 +25,28 @@ class CartController extends Controller
         $product = $productRepository->find($request->get('product_id'));
 
         // TODO CREATE SERVICE
-        $this->get('app.product.stock')->decrementProductStock($product);
+        $quantity = $request->request->get('quantity_product');
 
-        $session = $this->get('session');
+        $success = $this->get('app.product.stock')->decrementProductStock($product, $quantity);
 
-        $cart = $session->get('cart');
+        if (!$success) {
+            $this->addFlash('error', 'Il n\'y pas assez de stock pour le produit ' . $product->getName(). ' . <a href="'.$this->generateUrl('cart').'">Voir le panier.</a>');
 
-        $currentQty = $cart[$product->getId()] ?? 0;
+        }else {
+            $session = $this->get('session');
 
-        // on ajoute le produit au panier
-        $cart[$product->getId()] = $currentQty + 1;
+            $cart = $session->get('cart');
 
-        $session->set('cart', $cart);
-        $session->save();
+            $currentQty = $cart[$product->getId()] ?? 0;
 
-        $this->addFlash('info', 'Le produit ' . $product->getName(). ' a bien été ajouté. <a href="'.$this->generateUrl('cart').'">Voir le panier.</a>');
+            // on ajoute le produit au panier
+            $cart[$product->getId()] = $currentQty + $quantity;
+
+            $session->set('cart', $cart);
+            $session->save();
+
+            $this->addFlash('info', 'Le produit ' . $product->getName(). ' a bien été ajouté. <a href="'.$this->generateUrl('cart').'">Voir le panier.</a>');
+        }
 
         return $this->redirectToRoute('product_details', ['id' => $product->getId() ]);
     }
@@ -79,11 +86,22 @@ class CartController extends Controller
     public function clearCart(Request $request) {
         $cart = $this->get('session')->get('cart') ?? [];
 
+        // TODO SET QUANTITY HAS BEFORE
+        $cart = $this->get('session')->get('cart');
+        $productRepository = $this->get('doctrine')->getRepository(Product::class);
+        $em = $this->get('doctrine')->getManager();
+
+        foreach ($cart as $key=>$quantity) {
+            $product = $productRepository->findOneById($key);
+            $product->provisionStock($quantity);
+            $em->persist($product);
+
+        }
+        $em->flush();
         $session = $this->get('session');
         $session->remove('cart');
 
         $session->save();
-
         return $this->redirectToRoute('cart');
     }
 }

@@ -130,12 +130,15 @@ class DefaultController extends Controller
      * @param $productId
      * @return Response
      */
-    public function showMostViewedProductsAction($productId)
+    public function showMostViewedProductsAction($productId = null)
     {
         $productRepository = $this->get('doctrine')->getRepository(Product::class);
 
-        $product = $productRepository->find($productId);
-
+        if ($productId == null) {
+            $product = null;
+        }else {
+            $product = $productRepository->find($productId);
+        }
         $mostViewedProducts = $productRepository->getMostViewedProducts($product, self::MAX_VIEWED_PRODUCTS);
 
         return $this->render('_show_most_viewed_products.html.twig', [

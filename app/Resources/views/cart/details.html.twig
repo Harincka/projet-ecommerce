@@ -35,6 +35,10 @@
 
     {% else %}
         Le panier est vide
+
+        {{ render(controller(
+        'AppBundle:Default:showMostViewedProducts'
+        )) }}
     {% endif %}
 
 {% endblock %}

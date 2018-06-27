@@ -304,11 +304,16 @@ class Product
     /**
      * @return $this
      */
-    public function decrementStock()
+    public function decrementStock($quantity)
     {
-        $this->stock--;
+        $res = $this->stock-$quantity;
 
-        return $this;
+        if ($res < 0) {
+            return false;
+        }
+        $this->stock = $res;
+
+        return true;
     }
 
     /**

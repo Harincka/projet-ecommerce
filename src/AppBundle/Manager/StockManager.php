@@ -21,19 +21,28 @@ class StockManager
         $this->doctrine = $doctrine;
     }
 
-    public function decrementProductStock(Product $product)
+    public function decrementProductStock(Product $product, $quantity)
     {
+        if ($quantity <= 0) {
+            throw new \Exception('Quantity incorrect');
+        }
+
         $currentStock = $product->getStock();
 
         if ($currentStock === 0) {
             throw new \Exception('Produit indisponible');
         }
 
-        $product->decrementStock();
+        $success = $product->decrementStock($quantity);
+
+        if (!$success) {
+            return false;
+        }
 
         $em = $this->doctrine->getManager();
         $em->persist($product);
         $em->flush();
 
+        return true;
     }
 }
