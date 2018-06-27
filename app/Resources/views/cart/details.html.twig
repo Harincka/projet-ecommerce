@@ -2,12 +2,12 @@
 
 {% block body %}
 
-    <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-muted">Votre panier</span>
-    </h4>
+
 
     {% if products is not empty %}
-        
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Votre panier</span>
+        </h4>
         <ul class="list-group mb-3">
 
             {% for element in products %}
@@ -34,7 +34,9 @@
         </ul>
 
     {% else %}
-        Le panier est vide
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Votre panier est vide</span>
+        </h4>
 
         {{ render(controller(
         'AppBundle:Default:showMostViewedProducts'

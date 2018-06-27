@@ -2,9 +2,13 @@
 
     <h2>Les produits les plus vus</h2>
 
-    {% for product in most_viewed_products %}
-        {{ product.name }}
-	      {% include 'default/_product_details.html.twig' %}
-    {% endfor %}
-
+		<div class="container">
+			<div class="row">
+				{% for product in most_viewed_products %}
+					<div class="col-md-4">
+						{% include 'default/_product_details.html.twig' %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
 {% endif %}
