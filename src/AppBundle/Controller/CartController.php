@@ -24,18 +24,8 @@ class CartController extends Controller
         $productRepository = $this->get('doctrine')->getRepository(Product::class);
         $product = $productRepository->find($request->get('product_id'));
 
-        // gestion du stock
-        $currentStock = $product->getStock();
-
-        if ($currentStock === 0) {
-            throw new \Exception('Produit indisponible');
-        }
-
-        $product->decrementStock();
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($product);
-        $em->flush();
+        // TODO CREATE SERVICE
+        $this->get('app.product.stock')->decrementProductStock($product);
 
         $session = $this->get('session');
 
@@ -79,6 +69,20 @@ class CartController extends Controller
         $product = $productRepository->find($request->get('product_id'));
 
         $this->get('app.cart')->removeProduct($product);
+
+        return $this->redirectToRoute('cart');
+    }
+
+    /**
+     * @Route("/clearcart", name="clear_cart")
+     */
+    public function clearCart(Request $request) {
+        $cart = $this->get('session')->get('cart') ?? [];
+
+        $session = $this->get('session');
+        $session->remove('cart');
+
+        $session->save();
 
         return $this->redirectToRoute('cart');
     }

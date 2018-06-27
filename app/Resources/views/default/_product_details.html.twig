@@ -3,7 +3,11 @@
     <div>
         <form action="{{ path('add_to_cart') }}" method="post">
             <input type="hidden" name="product_id" value="{{ product.id }}" />
-            <button type="submit" class="btn btn-primary">Add to cart</button>
+            {% if product.isStockEmpty() %}
+                <strong>Product Unavailable</strong>
+            {% else %}
+                <button type="submit" class="btn btn-primary">Add to cart</button>
+            {% endif %}
         </form>
 
         {{ render(controller(

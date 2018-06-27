@@ -41,3 +41,7 @@ services:
     app.cart:
         class: AppBundle\Manager\CartManager
         arguments: ['@doctrine', '@session']
+
+    app.product.stock:
+        class: AppBundle\Manager\StockManager
+        arguments: ['@doctrine']

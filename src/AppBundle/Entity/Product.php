@@ -321,5 +321,9 @@ class Product
 
         return $this;
     }
+
+    public function isStockEmpty() {
+        return $this->stock <= 0;
+    }
 }
 
